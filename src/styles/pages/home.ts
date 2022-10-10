@@ -42,7 +42,9 @@ export const Product = styled('div', {
 
     strong: {
       fontSize: '$lg',
-      color: '$gray100'  
+      color: '$gray100',
+      display: 'block',
+      lineHeight: '2rem',
     },
 
     span: {
@@ -59,3 +61,11 @@ export const Product = styled('div', {
     }
   }
 }) 
+
+export const TagBag = styled('div', {
+  border: 'none',
+  padding: '0.75rem',
+  borderRadius: 6,
+  color: '$white',
+  background: '$green500'
+})

@@ -25,6 +25,7 @@ interface ProductProps {
 
 export default function Product({ product }: ProductProps) {
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+  const titlePage = `${product.name} | Ignite Shop`
 
   async function handleBuyProduct() {
     try {
@@ -46,7 +47,7 @@ export default function Product({ product }: ProductProps) {
   return (
     <>
       <Head>
-          <title>{product.name} | Ignite Shop</title>
+        <title>{titlePage}</title>
       </Head>
 
       <ProductContainer>
@@ -64,7 +65,7 @@ export default function Product({ product }: ProductProps) {
             onClick={handleBuyProduct}
             disabled={isCreatingCheckoutSession}
           >
-            Comprar agora
+            Colocar na sacola
           </button>
         </ProductDetails>
       </ProductContainer>
