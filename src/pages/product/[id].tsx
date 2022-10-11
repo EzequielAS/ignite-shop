@@ -1,7 +1,7 @@
-import axios from 'axios'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { stripe } from '../../lib/stripe'
-import { useState } from 'react'
+import { useShop } from '../../context/ShopContext'
+import { Header } from '../../components/Header'
 import Image from 'next/image'
 import Head from 'next/head'
 import Stripe from 'stripe'
@@ -11,6 +11,7 @@ import {
   ProductContainer, 
   ProductDetails 
 } from '../../styles/pages/product'
+
 
 interface ProductProps {
   product: {
@@ -24,24 +25,17 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
   const titlePage = `${product.name} | Ignite Shop`
+  const { handleAddProductToCart } = useShop()
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true)
-
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-    } catch (err) {
-      setIsCreatingCheckoutSession(false)
-      alert('Falha ao redirecionar ao checkout')
-    }
+  function addToCart() {
+    handleAddProductToCart({
+      id: product.id,
+      imageUrl: product.imageUrl,
+      defaultPriceId: product.defaultPriceId,
+      name: product.name,
+      price: product.price
+    })
   }
 
   return (
@@ -49,6 +43,8 @@ export default function Product({ product }: ProductProps) {
       <Head>
         <title>{titlePage}</title>
       </Head>
+
+      <Header />
 
       <ProductContainer>
         <ImageContainer>
@@ -62,8 +58,7 @@ export default function Product({ product }: ProductProps) {
           <p>{product.description}</p>
 
           <button 
-            onClick={handleBuyProduct}
-            disabled={isCreatingCheckoutSession}
+            onClick={addToCart}
           >
             Colocar na sacola
           </button>

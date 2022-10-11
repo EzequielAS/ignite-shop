@@ -2,6 +2,7 @@ import { GetStaticProps } from 'next'
 import { useKeenSlider } from 'keen-slider/react'
 import { stripe } from '../lib/stripe'
 import { Handbag } from 'phosphor-react'
+import { Header } from '../components/Header'
 import Stripe from 'stripe'
 import Image from 'next/future/image'
 import Head from 'next/head'
@@ -32,6 +33,8 @@ export default function Home({ products }: HomeProps) {
     <Head>
       <title>Home | Ignite Shop</title>
     </Head>
+
+    <Header />
 
     <HomeContainer ref={sliderRef} className="keen-slider">
         {products.map(product => (

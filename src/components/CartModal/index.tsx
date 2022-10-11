@@ -1,4 +1,9 @@
+import Image from 'next/future/image'
 import { X } from 'phosphor-react'
+import { useState } from 'react'
+import { useShop } from '../../context/ShopContext'
+import axios from 'axios'
+
 import { 
   DialogContainer, 
   ProductCard, 
@@ -15,20 +20,33 @@ interface CartModalProps {
 }
 
 export function CartModal({ isOpen, toggleModal }: CartModalProps) {
-  const products = [
-    {
-      name: 'Camiseta Beyond the Limits',
-      price: 'R$ 79,90'
-    },
-    {
-      name: 'Camiseta Beyond the Limits',
-      price: 'R$ 79,90'
-    },
-    {
-      name: 'Camiseta Beyond the Limits',
-      price: 'R$ 79,90'
-    },
-  ]
+  const { products, handleRemoveProductFromCart } = useShop()
+  const [isCreatingCheckoutSession ,setIsCreatingCheckoutSession] = useState(false)
+  const totalPrice = products.reduce((acc, product) => {
+    const priceSanitized = Number(product.price.slice(2).replace(',', '.'))
+    return acc + priceSanitized
+  }, 0)
+
+  async function handleBuyProducts() {
+    const defaultPricesId = products.map(product => {
+      return product.defaultPriceId
+    })
+
+    try {
+      setIsCreatingCheckoutSession(true)
+
+      const response = await axios.post('/api/checkout', {
+        pricesId: defaultPricesId
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl
+    } catch (err) {
+      setIsCreatingCheckoutSession(false)
+      alert('Falha ao redirecionar ao checkout')
+    }
+  }
 
   return (
     <DialogContainer toggle={isOpen ? 'isOpen' : 'isClosed'}>
@@ -39,15 +57,21 @@ export function CartModal({ isOpen, toggleModal }: CartModalProps) {
 
       <ProductsWrapper>
         {products.map(product => (
-          <ProductCard key={product.name}>
+          <ProductCard key={product.id}>
             <ImageContainer>
-
+              <Image src={product.imageUrl} width={100} height={93} alt="" />
             </ImageContainer>
 
             <InfosWrapper>
               <span>{product.name}</span>
               <b>{product.price}</b>
-              <button>Remover</button>
+              <button 
+                onClick={() => {
+                  handleRemoveProductFromCart(product.id)
+                }}
+              >
+                Remover
+              </button>
             </InfosWrapper>
           </ProductCard>
         ))}
@@ -56,15 +80,25 @@ export function CartModal({ isOpen, toggleModal }: CartModalProps) {
       <DetailsContainer>
         <div>
           <span>Quantidade</span>
-          <span>3 itens</span>
+          <span>{products.length} itens</span>
         </div>
 
         <div>
           <b>Valor total</b>
-          <b>R$ 270,00</b>
+          <b>
+            {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+            }).format(totalPrice)}
+          </b>
         </div>
 
-        <button>Finalizar compra</button>
+        <button
+          disabled={isCreatingCheckoutSession}
+          onClick={handleBuyProducts}
+        >
+          Finalizar compra
+        </button>
       </DetailsContainer>
     </DialogContainer>
   )
