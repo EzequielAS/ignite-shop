@@ -34,6 +34,19 @@
   <img src="./github/product.png" />
 </div>
 
+### Cart
+
+<div 
+    style="
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        margin: 10px 0 60px 0;
+    "
+>
+  <img src="./github/cart.png" />
+</div>
+
 ### Success
 
 <div 
