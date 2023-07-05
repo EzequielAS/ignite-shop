@@ -1,10 +1,10 @@
 # Ignite Shop
 
-### Skills importantes no projeto:
+### Important Skills:
 <ul>
   <li>Next</li>
   <li>Stitches</li>
-  <li>SSR e SSG</li>
+  <li>SSR and SSG</li>
   <li>Stripe</li>
 </ul>
 
